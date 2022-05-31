@@ -1,0 +1,26 @@
+.header {
+  width: 100%;
+  border-bottom: 1px solid #000;
+  position: fixed;
+  top: 0;
+}
+.header__title {
+  margin: 0.5rem 0.5rem;
+}
+.nav {
+  width: 95%;
+  margin: 1rem auto;
+  display: flex;
+  justify-content: space-between;
+}
+.nav__list {
+  list-style: none;
+}
+.nav__link {
+  text-decoration: none;
+  color: #000;
+}
+.nav__active {
+  color: blue;
+  border-bottom: 1px solid blue;
+}
