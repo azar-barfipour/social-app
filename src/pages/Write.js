@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhotoVideo } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+// import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
+// import { Link } from "react-router-dom";
 
 import classes from "./Write.module.css";
 import Home from "./Home";
@@ -8,8 +11,9 @@ import Home from "./Home";
 const Write = () => {
   const [inputText, setInputText] = useState("");
   const [inputImages, setInputImages] = useState([]);
-  const [ImagesURL, setImagesURL] = useState([]);
+  const [ImagesURL, setImagesURL] = useState();
   const [postData, setPostData] = useState();
+  const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
     // get the url from images
@@ -18,29 +22,42 @@ const Write = () => {
       inputImages.forEach((image) =>
         newImagesUrl.push(URL.createObjectURL(image))
       );
-      console.log(newImagesUrl);
       setImagesURL(newImagesUrl);
     }
   }, [inputImages]);
 
   const inputTextHandler = (e) => {
+    setIsEmpty(false);
     setInputText(e.target.value);
   };
 
   const inputImagesHandler = (e) => {
-    console.log(e.target.files);
+    setIsEmpty(false);
     setInputImages([...e.target.files]);
   };
 
   const postHandler = (e) => {
     e.preventDefault();
-    setPostData({
-      images: [ImagesURL],
-      text: inputText,
-    });
+    if (inputText === "" && inputImages.length === 0) {
+      setIsEmpty(true);
+      return;
+    }
+    setIsEmpty(false);
+    setPostData([[ImagesURL], inputText]);
     // insert post data to the DB
+    // ....
     setInputText("");
     setInputImages("");
+    setImagesURL();
+  };
+
+  const removePreviewHandler = (e) => {
+    e.preventDefault();
+    setImagesURL();
+  };
+
+  const locationHandler = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -64,18 +81,43 @@ const Write = () => {
             />
             <FontAwesomeIcon icon={faPhotoVideo} />
           </label>
-          {ImagesURL.map((imageURL, inx) => (
-            <a href={imageURL} rel="noreferrer" target="_blank">
-              <img
+          {/* link to location page and search and submit the location 
+          then redirect to the write page and have a preview of the location and post it 
+          then in the posts page(Home) have a link of location to the google map
+          */}
+          {/* <Link to="/location">
+            <FontAwesomeIcon icon={faLocationPin} />
+          </Link> */}
+          {ImagesURL ? (
+            ImagesURL.map((imageURL, inx) => (
+              <a
                 key={inx}
-                src={imageURL}
-                alt="preview"
-                className={classes["preview-img"]}
-              ></img>
-            </a>
-          ))}
+                href={imageURL}
+                rel="noreferrer"
+                target="_blank"
+                className={classes["image__link"]}
+              >
+                <img
+                  src={imageURL}
+                  alt="preview"
+                  className={classes["preview-img"]}
+                ></img>
+                <FontAwesomeIcon
+                  icon={faClose}
+                  className={classes["remove__btn"]}
+                  onClick={removePreviewHandler}
+                />
+              </a>
+            ))
+          ) : (
+            <div></div>
+          )}
         </div>
-
+        {isEmpty && (
+          <p className={classes["empty-validation"]}>
+            <small>Please write or upload a photo</small>
+          </p>
+        )}
         <button type="submit" className={classes["form__btn"]}>
           Post
         </button>
