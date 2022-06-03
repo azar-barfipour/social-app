@@ -1,0 +1,11 @@
+.post {
+  /* border-top: 1px solid rgb(87, 87, 87);
+  border-bottom: 1px solid rgb(87, 87, 87); */
+}
+
+.post__text {
+  margin: 1rem 0;
+}
+.post__img {
+  width: 100%;
+}
